@@ -8,20 +8,22 @@ class Help(commands.Cog):
 
     @commands.command(name="help")
     async def help(self,ctx):
-        embed = discord.Embed(
+        """ Help command to display commands """
+        embed = discord.Embed( 
             title="LoserBot Commands",
             description="All Commands:",
             color=discord.Color.dark_gold()
-        )
+        ) # Start an embed message
 
         embed.add_field(
             name="🚨 Loss Tracker 🚨",
             value="""
-            `!loss @user` - Record a rage quit loss e.g. Mini aram
-            `!losses @user` - WALL OF SHAME (note: minikillerj might have bugged it)
+            `!loss @user` - Record a rage quit loss for specific user e.g. Mini aram
+            `!losses @user` - WALL OF SHAME for specific user (note: minikillerj might have bugged it)
+            `!losses ` - WALL OF SHAME for the server
             """,
             inline=False
-        )
+        ) # Can maybe be written better later on 
 
         await ctx.send(embed=embed)
 
