@@ -2,12 +2,20 @@ import discord, json, os
 from discord.ext import commands
 from datetime import datetime
 
+from opgg.scraper import OPGGScraper
+
 class LossTracker(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         os.makedirs('data', exist_ok=True)
         self.losses_json = 'data/losses.json' # To save the data locally
         self.load_losses()
+        self.scraper = OPGGScraper(headless=True)
+    
+    def __del__(self):
+        # Ensure the scraper is closed when the cog is unloaded
+        if hasattr(self, 'scraper'):
+            self.scraper.close_driver()
     
     def load_losses(self):
         """ Load the losses from JSON """
@@ -24,7 +32,7 @@ class LossTracker(commands.Cog):
             json.dump(self.losses, f, indent=4)
     
     @commands.command(name="loss")
-    async def record_loss(self, ctx, member: discord.Member):
+    async def record_loss(self, ctx, member: discord.Member, *, summoner_name: str = None):
         """ Loss command from @user """
         member_id = str(member.id)
         current_time = datetime.now()
@@ -37,9 +45,17 @@ class LossTracker(commands.Cog):
                 "loss_dates": []
             } # Create the loser 
         
+        kda_info = None
+        kda_picture = None
+        if summoner_name:
+            print(summoner_name)
+            kda_info = self.scraper.get_kda(summoner_name)
+            kda_picture = self.scraper.get_picture(summoner_name)
+
+
         self.losses[member_id]["total_losses"] += 1
         self.losses[member_id]["loss_dates"].append(timestamp)
-        self.save_losses() # Saves the loss with time
+        self.save_losses()
 
         loss_count = self.losses[member_id]["total_losses"] # Gets user's losses
         
@@ -48,10 +64,19 @@ class LossTracker(commands.Cog):
             description=f"{member.mention} HAS LEFT ON A LOSS!\nHas been a pussy: {loss_count} times\n(Recorded on {timestamp})",
             color=discord.Color.red()
         ) # Embed message telling the whole server that @user is a pussy
-        file = discord.File('resources/200w.gif', filename="200w.gif")  # le gif
-        embed.set_image(url="attachment://200w.gif")                    # le nice
-
-        await ctx.send(file=file, embed=embed)
+        if kda_info:
+            embed.add_field(
+                name="Last Match Stats",
+                value=f"KDA: {kda_info}\n",
+                inline=False
+            )
+        if kda_picture:
+            embed.set_image(url=kda_picture)
+            await ctx.send(embed=embed)
+        else:
+            file = discord.File('resources/200w.gif', filename="200w.gif")  
+            embed.set_image(url="attachment://200w.gif")    
+            await ctx.send(file=file, embed=embed)
         
     @commands.command(name="losses")
     async def show_losses(self, ctx, *, member: discord.Member = None):
