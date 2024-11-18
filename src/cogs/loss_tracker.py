@@ -13,7 +13,7 @@ class LossTracker(commands.Cog):
         self.scraper = OPGGScraper(headless=True)
     
     def __del__(self):
-        # Ensure the scraper is closed when the cog is unloaded
+        """ Ensure the scraper is closed when the cog is unloade """
         if hasattr(self, 'scraper'):
             self.scraper.close_driver()
     
@@ -45,12 +45,12 @@ class LossTracker(commands.Cog):
                 "loss_dates": []
             } # Create the loser 
         
-        kda_info = None
-        kda_picture = None
+        stats = None
         if summoner_name:
-            print(summoner_name)
-            kda_info = self.scraper.get_kda(summoner_name)
-            kda_picture = self.scraper.get_picture(summoner_name)
+            try:
+                stats = self.scraper.get_kda(summoner_name) # Get stats from op
+            except Exception as e:
+                await ctx.send(f"Error fetching stats: {str(e)}")
 
 
         self.losses[member_id]["total_losses"] += 1
@@ -64,16 +64,16 @@ class LossTracker(commands.Cog):
             description=f"{member.mention} HAS LEFT ON A LOSS!\nHas been a pussy: {loss_count} times\n(Recorded on {timestamp})",
             color=discord.Color.red()
         ) # Embed message telling the whole server that @user is a pussy
-        if kda_info:
+        if stats:
             embed.add_field(
                 name="Last Match Stats",
-                value=f"KDA: {kda_info}\n",
+                value=f"KDA: {stats.kda}\n Place: {stats.place}",
                 inline=False
-            )
-        if kda_picture:
-            embed.set_image(url=kda_picture)
+            ) # If stats are available attach that
+        if stats and stats.profile_image_url: # Add picture from game
+            embed.set_image(url=stats.profile_image_url)
             await ctx.send(embed=embed)
-        else:
+        else:                                 # siren time baby
             file = discord.File('resources/200w.gif', filename="200w.gif")  
             embed.set_image(url="attachment://200w.gif")    
             await ctx.send(file=file, embed=embed)

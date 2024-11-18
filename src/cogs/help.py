@@ -18,7 +18,7 @@ class Help(commands.Cog):
         embed.add_field(
             name="🚨 Loss Tracker 🚨",
             value="""
-            `!loss @user` - Record a rage quit loss for specific user e.g. Mini aram
+            `!loss @user USERNAME_EUNE` - Record a rage quit loss for specific user e.g. Mini aram
             `!losses @user` - WALL OF SHAME for specific user (note: minikillerj might have bugged it)
             `!losses ` - WALL OF SHAME for the server
             """,
