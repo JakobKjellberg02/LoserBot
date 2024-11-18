@@ -67,7 +67,7 @@ class LossTracker(commands.Cog):
         if stats:
             embed.add_field(
                 name="Last Match Stats",
-                value=f"KDA: {stats.kda}\n Place: {stats.place}",
+                value=f"KDA: {stats.kda}\nPlace: {stats.place}",
                 inline=False
             ) # If stats are available attach that
         if stats and stats.profile_image_url: # Add picture from game
