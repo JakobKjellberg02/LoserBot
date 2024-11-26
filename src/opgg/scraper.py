@@ -57,11 +57,11 @@ class OPGGScraper:
             if not child_divs:
                 return None
             
+            stats_div = child_divs[0]
             stats = PlayerStats()
-
             try:
                 """ Stats """
-                kda_div = parent_div.find_element(By.CLASS_NAME, "kda-stats")
+                kda_div = stats_div.find_element(By.CLASS_NAME, "kda-stats")
                 kda_spans = kda_div.find_elements(By.TAG_NAME, "span")
                 stats.kda = "/".join(span.text.strip() for span in kda_spans if span.text.strip())
             except NoSuchElementException:
@@ -69,7 +69,7 @@ class OPGGScraper:
             
             try:
                 """ Score badge """
-                scorebadge_div = parent_div.find_element(By.CLASS_NAME, "sub")
+                scorebadge_div = stats_div.find_element(By.CLASS_NAME, "sub")
                 game_contain = scorebadge_div.find_element(By.CLASS_NAME, "game-tags__scroll-container")
                 gametags_div = game_contain.find_element(By.CLASS_NAME, "game-tags")
                 scorebadge_div = gametags_div.find_element(By.CLASS_NAME, "OPScoreBadge.css-1mkftr3.e1tb8p1o0")
@@ -82,9 +82,8 @@ class OPGGScraper:
 
             try:
                 """ Image """
-                main_div = parent_div.find_element(By.CLASS_NAME, "main")
-                info_div = main_div.find_element(By.CLASS_NAME, "info")
-                img_element = info_div.find_element(By.TAG_NAME, "img")
+                champion_link = child_divs[0].find_element(By.CLASS_NAME, "champion")
+                img_element = champion_link.find_element(By.TAG_NAME, "img")
                 stats.profile_image_url = img_element.get_attribute("src")
             except NoSuchElementException:
                 print(f"Profile image not found for user: {username}")
