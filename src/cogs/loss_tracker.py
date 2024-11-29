@@ -143,7 +143,7 @@ class LossTracker(commands.Cog):
                 
                 rank_display = medal_emojis.get(rank, f"#{rank}")
                 embed.add_field(
-                    name=f"#{rank_display}: {data['total_losses']} Ragequits",
+                    name=f"{rank_display}: {data['total_losses']} Ragequits",
                     value=f"{name}\nLast ragequit: {data['loss_dates'][-1]}",
                     inline=False
                 )

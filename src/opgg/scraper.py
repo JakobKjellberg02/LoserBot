@@ -51,8 +51,8 @@ class OPGGScraper:
             formatted_username = first_part.replace(" ", "%20") # Format with op standard
             url = f"https://www.op.gg/summoners/eune/{formatted_username}-{second_part}"
             self.driver.get(url)
-            parent_div = self.driver.find_element(By.CLASS_NAME, "css-1jxewmm.e14wvufv0")
-            child_divs = parent_div.find_elements(By.CLASS_NAME, "css-j7qwjs.e1c5dkji0")
+            parent_div = self.driver.find_element(By.CLASS_NAME, "css-1jxewmm.ek41ybw0")
+            child_divs = parent_div.find_elements(By.CLASS_NAME, "css-j7qwjs.ery81n90")
 
             if not child_divs:
                 return None
