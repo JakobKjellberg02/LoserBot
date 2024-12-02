@@ -58,10 +58,15 @@ class LossTracker(commands.Cog):
         self.save_losses()
 
         loss_count = self.losses[member_id]["total_losses"] # Gets user's losses
-        
+
+        loss_count_text = f"Has been a pussy: {loss_count} times" if loss_count > 1 else "Has been a pussy: 1 time" # Grammar 
         embed = discord.Embed(
             title="RAGEQUIT ALERT!", 
-            description=f"{member.mention} HAS LEFT ON A LOSS!\nHas been a pussy: {loss_count} times\n(Recorded on {timestamp})",
+            description=(
+                f"{member.mention} HAS LEFT ON A LOSS!\n"
+                f"{loss_count_text}\n"
+                f"(Recorded on {timestamp})"
+            ),
             color=discord.Color.red()
         ) # Embed message telling the whole server that @user is a pussy
         if stats:
